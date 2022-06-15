@@ -34,7 +34,7 @@ Public Function copyStockToCusColumn(stock As ListObject, stockName As String, c
     Set customCells = getColumn(stock, cusName)
     
     For Each valueCell In stockCells
-        If valueCell.Value <> "-" Then
+        If valueCell.Value <> "-" Then '如果資料不等於 "-" 即更新欄位
             customCells(stock.ListRows(valueCell.Row - stock.HeaderRowRange.Row).Index) = valueCell.Value
         End If
     Next
