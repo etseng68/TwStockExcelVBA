@@ -1,0 +1,65 @@
+'股市資料保存及設定更新時間 Excel vba  
+
+'------------------- in active worksheet-------------------------------------------
+Public nextTime As Date '計時器時間公用變數
+
+'股市資料更新時觸發
+Private Sub Worksheet_TableUpdate(ByVal Target As TableObject)
+    Dim stock As ListObject
+    Set stock = Target.ResultRange.ListObject
+    copyStockToCusColumn stock, "Column1.z", "成交價"
+    copyStockToCusColumn stock, "Column1.tv", "成交量"
+    timer 5
+End Sub
+
+'更新資料計時器(以秒為單位)
+Public Sub timer(seconds As Integer)
+    On Error Resume Next
+    nextTime = Now + TimeSerial(0, 0, seconds)
+    Debug.Print "Timer:" + Format(nextTime, "Long Time")
+    If Time() < TimeSerial(13, 35, 0) Then
+        Application.OnTime nextTime, "stockRefresh"
+    Else
+        Application.OnTime nextTime, "stockRefresh", , False
+    End If
+End Sub
+
+'複製股市資料欄到自定義的欄位
+Public Function copyStockToCusColumn(stock As ListObject, stockName As String, cusName As String)
+    Dim stockCells As Range
+    Dim customCells As Range
+    Dim valueCell As Range
+    
+    Set stockCells = getColumn(stock, stockName)
+    Set customCells = getColumn(stock, cusName)
+    
+    For Each valueCell In stockCells
+        If valueCell.Value <> "-" Then
+            customCells(stock.ListRows(valueCell.Row - stock.HeaderRowRange.Row).Index) = valueCell.Value
+        End If
+    Next
+    
+End Function
+
+'讀取欄位範圍(如果存即新增)
+Public Function getColumn(stock As ListObject, name As String) As Range
+    Dim tColumn As ListColumn
+    Dim findName As Range
+    
+    Set findName = stock.HeaderRowRange.Find(name, LookIn:=xlValues, LookAt:=xlWhole)
+    If findName Is Nothing Then
+        Set tColumn = stock.ListColumns.Add
+        tColumn.name = name
+        Set getColumn = tColumn.DataBodyRange.Cells
+    Else
+        Set getColumn = stock.ListColumns(name).DataBodyRange.Cells
+    End If
+    
+End Function
+
+
+'------------------- in Module-------------------------------------------
+'股市資料重新整理
+Public Function stockRefresh()
+    ActiveWorkbook.Sheets("Document").ListObjects("Document").TableObject.Refresh
+End Function
