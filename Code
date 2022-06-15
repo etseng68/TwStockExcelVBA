@@ -7,20 +7,20 @@ Public nextTime As Date '計時器時間公用變數
 Private Sub Worksheet_TableUpdate(ByVal Target As TableObject)
     Dim stock As ListObject
     Set stock = Target.ResultRange.ListObject
-    copyStockToCusColumn stock, "Column1.z", "成交價"
-    copyStockToCusColumn stock, "Column1.tv", "成交量"
+    copyStockToCusColumn stock, "Column1.z", "成交價"   '"Column1.z" 為股市資料欄位,"成交價"為自定義保存資料欄位 
+    copyStockToCusColumn stock, "Column1.tv", "成交量"  '"Column1.tv" 為股市資料欄位,"成交量"為自定義保存資料欄位
     timer 5
 End Sub
 
 '更新資料計時器(以秒為單位)
 Public Sub timer(seconds As Integer)
     On Error Resume Next
-    nextTime = Now + TimeSerial(0, 0, seconds)
-    Debug.Print "Timer:" + Format(nextTime, "Long Time")
+    nextTime = Now + TimeSerial(0, 0, seconds) '公用變數 下次更新時間= 現在時間 + 時間(秒數) 
+    'Debug.Print "Timer:" + Format(nextTime, "Long Time")
     If Time() < TimeSerial(13, 35, 0) Then '超過收盤時間 13:35:00 停止更新
-        Application.OnTime nextTime, "stockRefresh"
+        Application.OnTime nextTime, "stockRefresh"            '依公用變數時間 call stockRefresh 更新
     Else
-        Application.OnTime nextTime, "stockRefresh", , False
+        Application.OnTime nextTime, "stockRefresh", , False   '停止更新
     End If
 End Sub
 
