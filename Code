@@ -17,7 +17,7 @@ Public Sub timer(seconds As Integer)
     On Error Resume Next
     nextTime = Now + TimeSerial(0, 0, seconds)
     Debug.Print "Timer:" + Format(nextTime, "Long Time")
-    If Time() < TimeSerial(13, 35, 0) Then
+    If Time() < TimeSerial(13, 35, 0) Then '超過收盤時間 13:35:00 停止更新
         Application.OnTime nextTime, "stockRefresh"
     Else
         Application.OnTime nextTime, "stockRefresh", , False
