@@ -7,8 +7,8 @@ Public nextTime As Date '計時器時間公用變數
 Private Sub Worksheet_TableUpdate(ByVal Target As TableObject)
     Dim stock As ListObject
     Set stock = Target.ResultRange.ListObject
-    copyStockToCusColumn stock, "Column1.z", "成交價"   '"Column1.z" 為股市資料欄位,"成交價"為自定義保存資料欄位 
-    copyStockToCusColumn stock, "Column1.tv", "成交量"  '"Column1.tv" 為股市資料欄位,"成交量"為自定義保存資料欄位
+    copyStockToCusColumn stock, "撮合價", "成交價"  '"撮合價" 為股市資料欄位, "成交價"為自定義保存資料欄位 
+    copyStockToCusColumn stock, "撮合量", "成交量"  '"撮合量" 為股市資料欄位, "成交量"為自定義保存資料欄位
     timer 5
 End Sub
 
